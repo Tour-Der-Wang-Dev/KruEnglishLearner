@@ -15,7 +15,7 @@ export default function Home() {
       <TestimonialsSection />
       
       {/* CTA Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-thai-cream">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
             พร้อมเริ่มต้นเรียนภาษาอังกฤษแล้วหรือยัง?
@@ -25,14 +25,14 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/pricing">
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 hover-scale">
+              <Button className="btn-thai-primary px-8 py-4 text-lg font-semibold">
                 ดูแพลนและราคา
               </Button>
             </Link>
             <Link href="/level-test">
               <Button 
                 variant="outline"
-                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200"
+                className="btn-thai-outline px-8 py-4 text-lg font-semibold"
               >
                 ทดสอบระดับฟรี
               </Button>

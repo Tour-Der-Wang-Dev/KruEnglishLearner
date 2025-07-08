@@ -20,10 +20,10 @@ export default function PricingCards({ showGeneralOnly = false }: PricingCardsPr
           {GENERAL_ENGLISH_PLANS.map((plan, index) => (
             <div 
               key={index}
-              className={`border rounded-lg p-4 ${plan.popular ? 'border-2 border-orange-500 relative' : 'border border-gray-200'}`}
+              className={`border rounded-lg p-4 ${plan.popular ? 'border-2 border-thai-orange relative' : 'border border-gray-200'}`}
             >
               {plan.popular && (
-                <div className="absolute -top-3 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                <div className="absolute -top-3 left-4 bg-thai-orange text-white px-3 py-1 rounded-full text-sm font-semibold">
                   ประหยัด {plan.discount}
                 </div>
               )}
@@ -33,7 +33,7 @@ export default function PricingCards({ showGeneralOnly = false }: PricingCardsPr
                   {plan.originalPrice && (
                     <span className="text-lg line-through text-gray-400">{plan.originalPrice.toLocaleString()}</span>
                   )}
-                  <span className={`text-2xl font-bold ml-2 ${plan.popular ? 'text-orange-500' : 'text-blue-600'}`}>
+                  <span className={`text-2xl font-bold ml-2 ${plan.popular ? 'text-thai-orange' : 'text-thai-red'}`}>
                     {plan.price.toLocaleString()} บาท
                   </span>
                 </div>
@@ -42,12 +42,12 @@ export default function PricingCards({ showGeneralOnly = false }: PricingCardsPr
                 <Button 
                   className={`w-full py-2 rounded-lg font-medium transition-colors ${
                     plan.popular 
-                      ? 'bg-orange-500 hover:bg-orange-600 text-white'
+                      ? 'bg-thai-orange hover:bg-thai-rose text-white'
                       : index === 2 
-                        ? 'bg-green-600 hover:bg-green-700 text-white'
+                        ? 'bg-thai-rose hover:bg-thai-red text-white'
                         : index === 3
-                          ? 'bg-purple-600 hover:bg-purple-700 text-white'
-                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                          ? 'bg-thai-red hover:bg-thai-rose text-white'
+                          : 'bg-thai-red hover:bg-thai-rose text-white'
                   }`}
                 >
                   ซื้อเลย

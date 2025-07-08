@@ -24,7 +24,7 @@ export default function HeroSection() {
               <Link href="/level-test">
                 <Button 
                   variant="outline" 
-                  className="border-white text-white hover:bg-white hover:text-thai-red px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200"
+                  className="border-white text-white hover:bg-white hover:text-thai-red px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200"2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200"
                 >
                   ทดลองเรียนฟรี
                 </Button>
@@ -33,15 +33,15 @@ export default function HeroSection() {
           </div>
           <div className="relative animate-slide-up">
             <img 
-              src="/api/placeholder/600/400" 
-              alt="English Learning with Native Teachers"
+              src="https://images.unsplash.com/photo-1588072432836-e10032774350?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
+              alt="Online English class with students learning via video call" 
               className="rounded-2xl shadow-2xl w-full"
             />
-            <div className="absolute -top-4 -right-4 bg-yellow-400 text-thai-red px-4 py-2 rounded-full font-bold">
-              ⭐ 4.9/5
-            </div>
-            <div className="absolute -bottom-4 -left-4 bg-white text-thai-red px-4 py-2 rounded-full font-bold shadow-lg">
-              🎯 1000+ นักเรียน
+            <div className="absolute -bottom-6 -left-6 bg-white rounded-xl p-6 shadow-lg">
+              <div className="flex items-center gap-3">
+                <div className="bg-green-500 w-3 h-3 rounded-full"></div>
+                <span className="text-gray-800 font-semibold">มีนักเรียน 1,200+ คน</span>
+              </div>
             </div>
           </div>
         </div>

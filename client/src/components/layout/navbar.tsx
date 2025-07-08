@@ -24,7 +24,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-[#1E90FF] shadow-lg sticky top-0 z-50" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <nav className="bg-thai-red shadow-lg sticky top-0 z-50" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -44,8 +44,8 @@ export default function Navbar() {
                   <Link key={item.href} href={item.href}>
                     <span className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer ${
                       isActive(item.href)
-                        ? "text-white bg-[#87CEEB]"
-                        : "text-white hover:bg-[#87CEEB] hover:text-white"
+                        ? "text-white bg-thai-rose"
+                        : "text-white hover:bg-thai-rose hover:text-white"
                     }`}>
                       <IconComponent className="h-4 w-4" />
                       {item.label}
@@ -59,13 +59,13 @@ export default function Navbar() {
           {/* Action Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <Link href="/pricing">
-              <Button className="bg-white text-[#1E90FF] hover:bg-gray-100 font-medium">
+              <Button className="bg-white text-thai-red hover:bg-gray-100 font-medium">
                 <ShoppingCart className="h-4 w-4 mr-2" />
                 Buy Now
               </Button>
             </Link>
             <Link href="/profile">
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-[#1E90FF]">
+              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-thai-red">
                 <User className="h-4 w-4 mr-2" />
                 Profile
               </Button>

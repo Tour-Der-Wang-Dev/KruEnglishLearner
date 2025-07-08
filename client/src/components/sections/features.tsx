@@ -3,18 +3,18 @@ import { FEATURES } from "@/lib/constants";
 export default function FeaturesSection() {
   const getColorClasses = (color: string) => {
     const colorMap: Record<string, string> = {
-      blue: "bg-blue-500 bg-opacity-10 text-blue-500",
-      orange: "bg-orange-500 bg-opacity-10 text-orange-500", 
-      green: "bg-green-500 bg-opacity-10 text-green-500",
-      purple: "bg-purple-500 bg-opacity-10 text-purple-500",
-      yellow: "bg-yellow-500 bg-opacity-10 text-yellow-500",
-      red: "bg-red-500 bg-opacity-10 text-red-500"
+      blue: "bg-thai-red bg-opacity-10 text-thai-red",
+      orange: "bg-thai-orange bg-opacity-10 text-thai-orange", 
+      green: "bg-thai-rose bg-opacity-10 text-thai-rose",
+      purple: "bg-thai-red bg-opacity-10 text-thai-red",
+      yellow: "bg-thai-orange bg-opacity-10 text-thai-orange",
+      red: "bg-thai-red bg-opacity-10 text-thai-red"
     };
-    return colorMap[color] || colorMap.blue;
+    return colorMap[color] || colorMap.red;
   };
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-thai-cream">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
