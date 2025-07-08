@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import Stripe from "stripe";
 import { storage } from "./storage";
 import { registerAdminRoutes } from "./routes-admin";
+import { registerAIRoutes } from "./routes-ai";
 import { insertUserSchema, insertContactSchema, insertLevelTestSchema } from "@shared/schema";
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -194,6 +195,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register admin routes
   registerAdminRoutes(app);
+  
+  // Register AI routes
+  registerAIRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import AdminSidebar from '@/components/admin/admin-sidebar';
 import {
   DollarSign,
   Users,
@@ -18,7 +19,11 @@ import {
   RefreshCw,
   Search,
   Filter,
-  MoreHorizontal
+  MoreHorizontal,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Eye
 } from 'lucide-react';
 
 interface PaymentRecord {
@@ -43,6 +48,7 @@ interface DashboardStats {
 }
 
 export default function AdminDashboard() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({
     totalRevenue: 0,
     totalStudents: 0,
@@ -160,8 +166,15 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-thai-cream p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="flex min-h-screen bg-thai-cream">
+      <AdminSidebar 
+        isCollapsed={sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+      />
+      
+      <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
+        <div className="p-6">
+          <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
@@ -348,7 +361,9 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
         </Tabs>
-      </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

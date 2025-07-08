@@ -47,6 +47,8 @@ function AppContent() {
             <Route path="/contact-new" component={ContactNew} />
             <Route path="/admin-settings" component={AdminSettings} />
             <Route path="/admin-dashboard" component={AdminDashboard} />
+            <Route path="/admin-courses" component={lazy(() => import("@/pages/admin-courses"))} />
+            <Route path="/admin-students" component={lazy(() => import("@/pages/admin-students"))} />
             <Route path="/profile" component={Profile} />
             <Route component={NotFound} />
           </Switch>

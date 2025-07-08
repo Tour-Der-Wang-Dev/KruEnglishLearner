@@ -67,9 +67,9 @@ export default function Sidebar({ isCollapsed, onToggle, currentLanguage, onLang
     setChatMessages(prev => [...prev, userMessage]);
     setNewMessage('');
 
-    // Simulate AI response
-    setTimeout(() => {
-      const botResponse = generateBotResponse(newMessage, currentLanguage);
+    // Generate AI response
+    setTimeout(async () => {
+      const botResponse = await generateBotResponse(newMessage, currentLanguage);
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         text: botResponse,
@@ -80,37 +80,32 @@ export default function Sidebar({ isCollapsed, onToggle, currentLanguage, onLang
     }, 1000);
   };
 
-  const generateBotResponse = (userInput: string, language: 'th' | 'en'): string => {
-    const input = userInput.toLowerCase();
-    
-    if (language === 'th') {
-      if (input.includes('ราคา') || input.includes('แพลน')) {
-        return 'เรามีแพลนให้เลือก 3 แบบครับ: General English (390฿), CEFR Platinum (790฿), และ Combo Small Group (1,390฿) มีส่วนลดพิเศษสำหรับแพลนระยะยาวด้วยครับ';
+  const generateBotResponse = async (userInput: string, language: 'th' | 'en'): Promise<string> => {
+    try {
+      // Try to use the AI service for enhanced responses
+      const { AIChatbotService } = await import('@/components/ai/ai-chatbot-service');
+      const aiService = AIChatbotService.getInstance();
+      return await aiService.generateResponse(userInput, language);
+    } catch (error) {
+      console.error('AI service error:', error);
+      
+      // Fallback to simple responses
+      const input = userInput.toLowerCase();
+      
+      if (language === 'th') {
+        if (input.includes('ราคา') || input.includes('แพลน')) {
+          return 'เรามีแพลนให้เลือก 3 แบบครับ: General English (390฿), CEFR Platinum (790฿), และ Combo Small Group (1,390฿) มีส่วนลดพิเศษสำหรับแพลนระยะยาวด้วยครับ';
+        }
+        if (input.includes('เวลา') || input.includes('ตาราง')) {
+          return 'คลาสเรียนจะมีตั้งแต่เวลา 09:00-21:00 น. ทุกวันครับ สามารถดูตารางเรียนแบบละเอียดได้ในหน้า "ตารางเรียน"';
+        }
+        return 'ขอบคุณสำหรับคำถามครับ สามารถติดต่อทีมงานได้ที่หน้า "ติดต่อเรา" หรือถามเพิ่มเติมได้ครับ';
+      } else {
+        if (input.includes('price') || input.includes('plan')) {
+          return 'We offer 3 plans: General English (390 THB), CEFR Platinum (790 THB), and Combo Small Group (1,390 THB). Special discounts available!';
+        }
+        return 'Thank you for your question! Contact our support team via "Contact" page for more help.';
       }
-      if (input.includes('เวลา') || input.includes('ตาราง')) {
-        return 'คลาสเรียนจะมีตั้งแต่เวลา 09:00-21:00 น. ทุกวันครับ สามารถดูตารางเรียนแบบละเอียดได้ในหน้า "ตารางเรียน"';
-      }
-      if (input.includes('ครู') || input.includes('teacher')) {
-        return 'ครูของเราเป็นเจ้าของภาษาจากประเทศอเมริกา อังกฤษ และออสเตรเลีย มีประสบการณ์สอนมากกว่า 5 ปีครับ';
-      }
-      if (input.includes('ใบเซอร์') || input.includes('certificate')) {
-        return 'เมื่อจบคอร์สครบตามที่กำหนด คุณจะได้รับใบเซอร์ติฟิเคตระดับโลกที่ยอมรับในหลายประเทศครับ';
-      }
-      return 'ขอบคุณสำหรับคำถามครับ ท่านสามารถติดต่อทีมงานของเราได้ที่หน้า "ติดต่อเรา" หรือถามคำถามเพิ่มเติมได้เลยครับ';
-    } else {
-      if (input.includes('price') || input.includes('cost') || input.includes('plan')) {
-        return 'We offer 3 plans: General English (390 THB), CEFR Platinum (790 THB), and Combo Small Group (1,390 THB). Special discounts available for long-term plans!';
-      }
-      if (input.includes('time') || input.includes('schedule')) {
-        return 'Classes are available from 09:00-21:00 every day. You can view the detailed schedule in the "Schedule" section.';
-      }
-      if (input.includes('teacher') || input.includes('instructor')) {
-        return 'Our teachers are native speakers from the USA, UK, and Australia with over 5 years of teaching experience.';
-      }
-      if (input.includes('certificate') || input.includes('certification')) {
-        return 'Upon course completion, you\'ll receive an internationally recognized certificate accepted in many countries.';
-      }
-      return 'Thank you for your question! You can contact our support team via the "Contact" page or feel free to ask more questions here.';
     }
   };
 
