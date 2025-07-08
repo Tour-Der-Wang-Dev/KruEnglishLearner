@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "hostinger:build": "npm run build && npm run hostinger:prepare",
+    "hostinger:prepare": "echo 'Creating deployment package...' && mkdir -p deploy && cp -r dist package.json package-lock.json .env.example deploy/",
+    "hostinger:deploy": "npm run hostinger:build && echo 'Ready for upload to Hostinger'",
+    "production:start": "NODE_ENV=production node dist/index.js",
+    "production:build": "npm run build",
+    "migrate:production": "NODE_ENV=production npx drizzle-kit push:pg"
+  }
+}
