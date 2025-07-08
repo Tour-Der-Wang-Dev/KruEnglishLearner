@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import Stripe from "stripe";
 import { storage } from "./storage";
+import { registerAdminRoutes } from "./routes-admin";
 import { insertUserSchema, insertContactSchema, insertLevelTestSchema } from "@shared/schema";
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -190,6 +191,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Error fetching enrollments: " + error.message });
     }
   });
+
+  // Register admin routes
+  registerAdminRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

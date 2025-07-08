@@ -1,289 +1,188 @@
-import { useStripe, Elements, PaymentElement, useElements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'wouter';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import Navbar from "@/components/layout/navbar";
-import Footer from "@/components/layout/footer";
-
-// Make sure to call `loadStripe` outside of a component's render to avoid
-// recreating the `Stripe` object on every render.
-if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
-  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
-}
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-
-const CheckoutForm = ({ courseId, amount }: { courseId: string, amount: string }) => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const { toast } = useToast();
-  const [, setLocation] = useLocation();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [customerInfo, setCustomerInfo] = useState({
-    name: '',
-    email: '',
-    phone: ''
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!stripe || !elements) {
-      return;
-    }
-
-    if (!customerInfo.name || !customerInfo.email) {
-      toast({
-        title: "กรุณากรอกข้อมูล",
-        description: "โปรดกรอกชื่อและอีเมลให้ครบถ้วน",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsProcessing(true);
-
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/course-access`,
-        receipt_email: customerInfo.email,
-      },
-    });
-
-    if (error) {
-      toast({
-        title: "การชำระเงินล้มเหลว",
-        description: error.message,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "การชำระเงินสำเร็จ!",
-        description: "ขอบคุณสำหรับการสมัครเรียน คุณสามารถเข้าเรียนได้แล้ว",
-      });
-      setLocation('/course-access');
-    }
-
-    setIsProcessing(false);
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="name">ชื่อ-นามสกุล *</Label>
-          <Input
-            id="name"
-            type="text"
-            value={customerInfo.name}
-            onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
-            placeholder="กรุณากรอกชื่อ-นามสกุล"
-            required
-          />
-        </div>
-        <div>
-          <Label htmlFor="email">อีเมล *</Label>
-          <Input
-            id="email"
-            type="email"
-            value={customerInfo.email}
-            onChange={(e) => setCustomerInfo(prev => ({ ...prev, email: e.target.value }))}
-            placeholder="your@email.com"
-            required
-          />
-        </div>
-      </div>
-      
-      <div>
-        <Label htmlFor="phone">เบอร์โทร</Label>
-        <Input
-          id="phone"
-          type="tel"
-          value={customerInfo.phone}
-          onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
-          placeholder="0xx-xxx-xxxx"
-        />
-      </div>
-
-      <div className="border-t pt-6">
-        <Label className="text-base font-medium mb-4 block">ข้อมูลการชำระเงิน</Label>
-        <PaymentElement />
-      </div>
-
-      <Button 
-        type="submit"
-        disabled={!stripe || isProcessing}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-semibold text-lg"
-      >
-        {isProcessing ? (
-          <div className="flex items-center justify-center">
-            <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-            กำลังดำเนินการ...
-          </div>
-        ) : (
-          `ชำระเงิน ${parseInt(amount).toLocaleString()} บาท`
-        )}
-      </Button>
-
-      <div className="text-sm text-gray-600 text-center">
-        <p>การชำระเงินมีความปลอดภัยด้วยระบบ SSL Encryption</p>
-        <p className="mt-1">ข้อมูลบัตรเครดิตของคุณจะไม่ถูกเก็บไว้ในระบบ</p>
-      </div>
-    </form>
-  );
-};
+import { useLanguage } from '@/contexts/LanguageContext';
+import EnhancedCheckout from '@/components/payment/enhanced-checkout';
+import { ArrowLeft, ShoppingCart } from 'lucide-react';
 
 export default function Checkout() {
-  const [clientSecret, setClientSecret] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [courseInfo, setCourseInfo] = useState<any>(null);
+  const [, setLocation] = useLocation();
+  const { t } = useLanguage();
+  const { toast } = useToast();
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState({
+    courseName: 'General English Course',
+    planDuration: '1 เดือน',
+    amount: 390
+  });
 
-  // Get URL parameters
+  // Get plan details from URL params or use default
   const urlParams = new URLSearchParams(window.location.search);
-  const courseId = urlParams.get('course') || '1';
-  const amount = urlParams.get('amount') || '390';
-  const plan = urlParams.get('plan');
+  const plan = urlParams.get('plan') || 'general';
+  const duration = urlParams.get('duration') || '1-month';
 
-  useEffect(() => {
-    // Create PaymentIntent as soon as the page loads
-    const createPaymentIntent = async () => {
-      try {
-        const response = await apiRequest("POST", "/api/create-payment-intent", { 
-          courseId: parseInt(courseId),
-          amount: parseInt(amount),
-          userEmail: '',
-          userName: ''
-        });
-        
-        const data = await response.json();
-        setClientSecret(data.clientSecret);
-        
-        // Get course info
-        const courseResponse = await apiRequest("GET", `/api/courses/${courseId}`);
-        const course = await courseResponse.json();
-        setCourseInfo(course);
-      } catch (error) {
-        console.error('Error creating payment intent:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Plan configurations
+  const planConfigs = {
+    'general-1-month': { courseName: 'General English', planDuration: '1 เดือน', amount: 390 },
+    'general-3-months': { courseName: 'General English', planDuration: '3 เดือน', amount: 1050 },
+    'general-6-months': { courseName: 'General English', planDuration: '6 เดือน', amount: 1950 },
+    'cefr-1-month': { courseName: 'CEFR Platinum', planDuration: '1 เดือน', amount: 790 },
+    'cefr-3-months': { courseName: 'CEFR Platinum', planDuration: '3 เดือน', amount: 2100 },
+    'cefr-6-months': { courseName: 'CEFR Platinum', planDuration: '6 เดือน', amount: 3900 },
+    'combo-1-month': { courseName: 'Combo Small Group', planDuration: '1 เดือน', amount: 1390 },
+    'combo-3-months': { courseName: 'Combo Small Group', planDuration: '3 เดือน', amount: 3900 },
+    'combo-6-months': { courseName: 'Combo Small Group', planDuration: '6 เดือน', amount: 7200 }
+  };
 
-    createPaymentIntent();
-  }, [courseId, amount]);
+  const planKey = `${plan}-${duration}` as keyof typeof planConfigs;
+  const currentPlan = planConfigs[planKey] || planConfigs['general-1-month'];
 
-  if (loading) {
+  // Set plan on component mount
+  React.useEffect(() => {
+    setSelectedPlan(currentPlan);
+  }, [currentPlan]);
+
+  const handleSuccess = () => {
+    toast({
+      title: t('payment.success'),
+      description: "คุณจะได้รับอีเมลยืนยันและสามารถเข้าถึงคอร์สได้ทันที"
+    });
+    setLocation('/course-access?success=true');
+  };
+
+  const handleBack = () => {
+    setLocation('/pricing');
+  };
+
+  if (showCheckout) {
     return (
-      <div className="min-h-screen bg-white">
-        <Navbar />
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full" aria-label="Loading"/>
+      <div className="min-h-screen bg-thai-cream py-8">
+        <div className="container mx-auto px-4">
+          <EnhancedCheckout
+            amount={selectedPlan.amount}
+            courseName={selectedPlan.courseName}
+            planDuration={selectedPlan.planDuration}
+            onSuccess={handleSuccess}
+            onBack={() => setShowCheckout(false)}
+          />
         </div>
-        <Footer />
       </div>
     );
   }
 
-  if (!clientSecret) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Navbar />
-        <div className="flex items-center justify-center py-20">
-          <Card className="w-full max-w-md mx-4">
-            <CardContent className="pt-6 text-center">
-              <p className="text-red-600">เกิดข้อผิดพลาดในการสร้างการชำระเงิน</p>
+  return (
+    <div className="min-h-screen bg-thai-cream py-8">
+      <div className="container mx-auto px-4 max-w-4xl">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-thai-red mb-2">
+            {t('payment.title')}
+          </h1>
+          <p className="text-gray-600">
+            กรุณาตรวจสอบรายละเอียดและดำเนินการชำระเงิน
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Order Summary */}
+          <Card className="border-thai-cream shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-thai-red">
+                <ShoppingCart className="h-5 w-5" />
+                สรุปคำสั่งซื้อ
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="bg-thai-cream bg-opacity-30 p-4 rounded-lg">
+                <h3 className="font-semibold text-lg text-gray-800 mb-2">
+                  {selectedPlan.courseName}
+                </h3>
+                <p className="text-gray-600 mb-4">แพลน: {selectedPlan.planDuration}</p>
+                
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>ราคาเต็ม</span>
+                    <span className="line-through text-gray-400">
+                      ฿{(selectedPlan.amount * 1.25).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-green-600">
+                    <span>ส่วนลด 20%</span>
+                    <span>-฿{(selectedPlan.amount * 0.25).toLocaleString()}</span>
+                  </div>
+                  <hr className="my-2" />
+                  <div className="flex justify-between text-lg font-bold text-thai-red">
+                    <span>ราคาสุทธิ</span>
+                    <span>฿{selectedPlan.amount.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3 text-sm text-gray-600">
+                <div className="flex items-start gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span>เรียนสดผ่าน Zoom พร้อมครูเจ้าของภาษา</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span>เอกสารการเรียนฟรี (PDF Download)</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span>ดูย้อนหลังได้ 7 วัน</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span>รับใบเซอร์ระดับโลก</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Action Card */}
+          <Card className="border-thai-cream shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-thai-red">
+                เริ่มต้นการเรียน
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="text-center">
+                <div className="text-4xl font-bold text-thai-red mb-2">
+                  ฿{selectedPlan.amount.toLocaleString()}
+                </div>
+                <p className="text-gray-600">{selectedPlan.planDuration}</p>
+              </div>
+
+              <div className="space-y-4">
+                <Button
+                  onClick={() => setShowCheckout(true)}
+                  className="w-full bg-thai-red hover:bg-thai-rose text-white text-lg py-6"
+                  size="lg"
+                >
+                  ดำเนินการชำระเงิน
+                </Button>
+
+                <Button
+                  onClick={handleBack}
+                  variant="outline"
+                  className="w-full border-thai-red text-thai-red hover:bg-thai-red hover:text-white"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  กลับไปเลือกแพลน
+                </Button>
+              </div>
+
+              <div className="text-xs text-gray-500 text-center">
+                <p>การชำระเงินปลอดภัยด้วย Stripe SSL Encryption</p>
+                <p>สามารถยกเลิกได้ภายใน 7 วัน</p>
+              </div>
             </CardContent>
           </Card>
         </div>
-        <Footer />
       </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-      
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              ชำระเงิน
-            </h1>
-            <p className="text-xl text-gray-600">กรุณากรอกข้อมูลเพื่อดำเนินการชำระเงิน</p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Order Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle>สรุปคำสั่งซื้อ</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {courseInfo && (
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-800">{courseInfo.name}</h4>
-                    <p className="text-gray-600">{courseInfo.description}</p>
-                    {plan && (
-                      <p className="text-sm text-gray-500 mt-2">แพลน: {plan}</p>
-                    )}
-                  </div>
-                )}
-                
-                <div className="border-t pt-4">
-                  <div className="flex justify-between items-center text-lg font-semibold">
-                    <span>ราคารวม</span>
-                    <span className="text-blue-600">{parseInt(amount).toLocaleString()} บาท</span>
-                  </div>
-                </div>
-
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <h5 className="font-semibold text-blue-800 mb-2">สิ่งที่คุณจะได้รับ:</h5>
-                  <ul className="text-sm text-blue-700 space-y-1">
-                    <li>• เข้าถึงคลาสเรียนสดผ่าน Zoom</li>
-                    <li>• เอกสารประกอบการเรียนฟรี</li>
-                    <li>• วิดีโอย้อนหลัง 24/7</li>
-                    <li>• การสนับสนุนจากทีมงาน</li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Payment Form */}
-            <Card>
-              <CardHeader>
-                <CardTitle>ข้อมูลการชำระเงิน</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Elements stripe={stripePromise} options={{ clientSecret }}>
-                  <CheckoutForm courseId={courseId} amount={amount} />
-                </Elements>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Security Notice */}
-          <div className="mt-8 bg-green-50 border border-green-200 rounded-lg p-4">
-            <div className="flex items-center">
-              <i className="fas fa-shield-alt text-green-600 text-xl mr-3"></i>
-              <div>
-                <h4 className="font-semibold text-green-800">การชำระเงินปลอดภัย</h4>
-                <p className="text-green-700 text-sm">
-                  ระบบการชำระเงินของเราใช้เทคโนโลยี SSL และ PCI DSS เพื่อปกป้องข้อมูลของคุณ
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Footer />
     </div>
   );
 }
