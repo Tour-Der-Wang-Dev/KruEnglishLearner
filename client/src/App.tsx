@@ -9,6 +9,8 @@ import LevelTest from "@/pages/level-test";
 import Checkout from "@/pages/checkout";
 import CourseAccess from "@/pages/course-access";
 import Contact from "@/pages/contact";
+import AdminSettings from "@/pages/admin-settings";
+import Profile from "@/pages/profile";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -20,6 +22,8 @@ function Router() {
       <Route path="/checkout" component={Checkout} />
       <Route path="/course-access" component={CourseAccess} />
       <Route path="/contact" component={Contact} />
+      <Route path="/admin-settings" component={AdminSettings} />
+      <Route path="/profile" component={Profile} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -1,0 +1,76 @@
+Create a beautiful, modern, and user-friendly website for Kru English using Lovable.dev to enable English learners to register, join live Zoom classes, access recorded videos, preview learning materials, take quizzes, and connect with YouTube and Zoom APIs. Ensure the design aligns with online English learning themes and meets the following specifications:
+
+1. **Website Goals**:
+   - Provide a flexible online English learning platform where users can develop speaking, pronunciation, and vocabulary skills through live classes with Thai and foreign teachers, access recordings, materials, and quizzes.
+   - Target audience: Learners from beginner (A1) to intermediate (B1) levels seeking flexible group or individual classes.
+
+2. **Structure and Pages**:
+   - **Homepage**:
+     - **Hero Section**: High-quality background image of a Zoom class, with text: “Learn English Live with Native Teachers. Free Materials, 24/7 Video Access.” Include a “Start Learning” CTA linking to Plan and Pricing.
+     - **Features Section**: 6 cards highlighting live Zoom classes (120+ hours/month), free materials, 24/7 video access, Thai and foreign teachers, certificates (CEFR plan), and 10-20% discounts for 3+ month plans.
+     - **Testimonials Section**: Display learner reviews with icons or photos.
+     - **CTA Section**: “View Plans & Pricing” button.
+   - **Plan and Pricing Page**:
+     - Display plans: General English (390-4,000 THB), CEFR English (590 THB/month), Combo (1,500 THB/8 hours) with “Buy Now”/“Book Now” buttons linking to payment.
+     - Highlight 10-20% discounts for 3+ month plans.
+   - **Test Level Page**:
+     - Online A1-A2 assessment with text: “Test your level and get 30 days of self-study access, 2 hours/week live Zoom classes, and a certificate.” Include “Start Test” and “Buy Now” buttons.
+   - **Payment Page**:
+     - Secure payment form; redirect to Course Access after payment.
+   - **Course Access Page**:
+     - Display live class schedules (e.g., Saturday-Sunday for A1-A2, daily for General), teacher profiles with photos, Zoom links (via Server-to-Server OAuth), downloadable materials (Google Drive), and categorized video recordings.
+   - **Contact Page**:
+     - Include LINE ID (@kruenglish), LINE link (https://lin.ee/yOEjxmf), email, social links, and a contact form with sample images.
+
+3. **Navbar (Navigation Bar)**:
+   - **Design**: Sticky Navbar with a blue background (#1E90FF), white text (#FFFFFF), Poppins font (16px), and hover effect (background #87CEEB).
+   - **Menu Items**:
+     - **Live Teaching (สอนสด)**: Link to /course-access#live with ⏺️ icon.
+     - **Watch Recorded Videos (ดูคลิปย้อนหลัง)**: Link to /course-access#recordings with ⏯️ icon.
+     - **Preview Learning Materials (พรีวิวเอกสาร)**: Link to /course-access#materials with 📄 icon.
+     - **Take Quizzes (ทำแบบทดสอบ)**: Link to /test-level with ✏️ icon.
+     - **Connect (เชื่อมต่อ YouTube/Zoom API)**: Link to /admin-settings with 🔗 icon (admin-only).
+   - **Additional Buttons**:
+     - **Buy Now**: Link to /plan-pricing (top-right).
+     - **Profile/Login**: Link to /profile (top-right).
+
+4. **Design**:
+   - **Style**: Modern, clean, and approachable.
+   - **Color Scheme**: Blue (#1E90FF) and white, with light blue (#87CEEB) accents.
+   - **Typography**: Poppins or Inter, 16-18px for body, 24-32px for headers.
+   - **Layout**: Responsive Grid layout for all devices.
+   - **Imagery**: Use Zoom class images, teachers, or learning graphics from Lovable.dev’s library.
+   - **Animations**: Fade-in for cards/CTAs, hover effects for buttons.
+
+5. **Functionality**:
+   - **Zoom Server-to-Server OAuth**:
+     - Authenticate via POST to `https://zoom.us/oauth/token` using Account ID, Client ID, Client Secret (stored securely).
+     - Create meeting links (e.g., “Kru English Live Class” at 02:15 PM +07, July 08, 2025) with `meeting:write` scope.
+     - Retrieve recordings with `meeting:read` scope for 24/7 access.
+   - **YouTube API**:
+     - Use YouTube Data API to fetch videos (e.g., `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId={PLAYLIST_ID}&key={API_KEY}`).
+     - Embed videos with `<iframe src="https://www.youtube.com/embed/{VIDEO_ID}"></iframe>` in Course Access.
+   - **Integrations**:
+     - Google Drive for materials.
+     - Calendly for Combo bookings.
+     - LINE API for notifications.
+     - Payment gateway (e.g., Stripe) for transactions.
+   - **SEO**: Keywords like “learn English online,” “Zoom classes” in meta tags.
+   - **Performance**: Optimize images with Lazy Loading.
+
+6. **User Experience (UX)**:
+   - Navigation within 3 clicks to plans, classes, or quizzes.
+   - Prominent CTAs: “Buy Now,” “Start Test.”
+   - Accessibility: WCAG 2.1-compliant contrast, keyboard navigation.
+
+7. **Testing and Deployment**:
+   - Test responsiveness on all devices using Lovable.dev tools.
+   - Verify Zoom links, YouTube embeds, and payment flows.
+   - Deploy with a Lovable.dev subdomain or custom domain (e.g., kruenglish.com).
+
+8. **Constraints**:
+   - Use Lovable.dev’s free/premium tools and supported integrations.
+   - Complete and deploy within 1-2 weeks.
+   - Securely store API credentials.
+
+Start building the website in Lovable.dev, prioritizing aesthetics, usability, and seamless Zoom/YouTube integration for English learners as of 02:15 PM +07, July 08, 2025.
