@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { 
   Home, 
   BookOpen, 
@@ -15,7 +17,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Globe,
-  BarChart3
+  BarChart3,
+  Bot,
+  Send,
+  X,
+  Minimize2
 } from "lucide-react";
 
 interface SidebarProps {
@@ -25,8 +31,88 @@ interface SidebarProps {
   onLanguageChange: (lang: 'th' | 'en') => void;
 }
 
+interface ChatMessage {
+  id: string;
+  text: string;
+  sender: 'user' | 'bot';
+  timestamp: Date;
+}
+
 export default function Sidebar({ isCollapsed, onToggle, currentLanguage, onLanguageChange }: SidebarProps) {
   const [location] = useLocation();
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isChatMinimized, setIsChatMinimized] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
+    {
+      id: '1',
+      text: currentLanguage === 'th' 
+        ? 'สวัสดีครับ! ผมคือ AI Assistant ของ Kru English พร้อมช่วยตอบคำถามเกี่ยวกับการเรียนภาษาอังกฤษและการใช้งานเว็บไซต์ครับ' 
+        : 'Hello! I\'m the Kru English AI Assistant. I\'m here to help with your English learning questions and website navigation.',
+      sender: 'bot',
+      timestamp: new Date()
+    }
+  ]);
+  const [newMessage, setNewMessage] = useState('');
+
+  const handleSendMessage = async () => {
+    if (!newMessage.trim()) return;
+
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      text: newMessage,
+      sender: 'user',
+      timestamp: new Date()
+    };
+
+    setChatMessages(prev => [...prev, userMessage]);
+    setNewMessage('');
+
+    // Simulate AI response
+    setTimeout(() => {
+      const botResponse = generateBotResponse(newMessage, currentLanguage);
+      const botMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        text: botResponse,
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      setChatMessages(prev => [...prev, botMessage]);
+    }, 1000);
+  };
+
+  const generateBotResponse = (userInput: string, language: 'th' | 'en'): string => {
+    const input = userInput.toLowerCase();
+    
+    if (language === 'th') {
+      if (input.includes('ราคา') || input.includes('แพลน')) {
+        return 'เรามีแพลนให้เลือก 3 แบบครับ: General English (390฿), CEFR Platinum (790฿), และ Combo Small Group (1,390฿) มีส่วนลดพิเศษสำหรับแพลนระยะยาวด้วยครับ';
+      }
+      if (input.includes('เวลา') || input.includes('ตาราง')) {
+        return 'คลาสเรียนจะมีตั้งแต่เวลา 09:00-21:00 น. ทุกวันครับ สามารถดูตารางเรียนแบบละเอียดได้ในหน้า "ตารางเรียน"';
+      }
+      if (input.includes('ครู') || input.includes('teacher')) {
+        return 'ครูของเราเป็นเจ้าของภาษาจากประเทศอเมริกา อังกฤษ และออสเตรเลีย มีประสบการณ์สอนมากกว่า 5 ปีครับ';
+      }
+      if (input.includes('ใบเซอร์') || input.includes('certificate')) {
+        return 'เมื่อจบคอร์สครบตามที่กำหนด คุณจะได้รับใบเซอร์ติฟิเคตระดับโลกที่ยอมรับในหลายประเทศครับ';
+      }
+      return 'ขอบคุณสำหรับคำถามครับ ท่านสามารถติดต่อทีมงานของเราได้ที่หน้า "ติดต่อเรา" หรือถามคำถามเพิ่มเติมได้เลยครับ';
+    } else {
+      if (input.includes('price') || input.includes('cost') || input.includes('plan')) {
+        return 'We offer 3 plans: General English (390 THB), CEFR Platinum (790 THB), and Combo Small Group (1,390 THB). Special discounts available for long-term plans!';
+      }
+      if (input.includes('time') || input.includes('schedule')) {
+        return 'Classes are available from 09:00-21:00 every day. You can view the detailed schedule in the "Schedule" section.';
+      }
+      if (input.includes('teacher') || input.includes('instructor')) {
+        return 'Our teachers are native speakers from the USA, UK, and Australia with over 5 years of teaching experience.';
+      }
+      if (input.includes('certificate') || input.includes('certification')) {
+        return 'Upon course completion, you\'ll receive an internationally recognized certificate accepted in many countries.';
+      }
+      return 'Thank you for your question! You can contact our support team via the "Contact" page or feel free to ask more questions here.';
+    }
+  };
 
   const menuItems = [
     {
@@ -168,9 +254,22 @@ export default function Sidebar({ isCollapsed, onToggle, currentLanguage, onLang
         </nav>
       </ScrollArea>
 
-      {/* Footer */}
+      {/* AI Chatbot & Footer */}
       {!isCollapsed && (
-        <div className="p-4 border-t border-thai-cream">
+        <div className="p-4 border-t border-thai-cream space-y-3">
+          {/* AI Chatbot Button */}
+          <Button
+            onClick={() => setIsChatOpen(true)}
+            className="w-full bg-gradient-to-r from-thai-red to-thai-rose text-white hover:from-thai-rose hover:to-thai-orange relative"
+          >
+            <Bot className="h-4 w-4 mr-2" />
+            {currentLanguage === 'th' ? 'AI ผู้ช่วย' : 'AI Assistant'}
+            <Badge className="absolute -top-1 -right-1 bg-green-500 text-white text-xs px-1">
+              {currentLanguage === 'th' ? 'ใหม่' : 'NEW'}
+            </Badge>
+          </Button>
+
+          {/* Help Button */}
           <div className="text-center">
             <p className="text-xs text-gray-500 mb-2">
               {currentLanguage === 'th' ? 'ติดต่อสนับสนุน' : 'Support'}
@@ -185,6 +284,107 @@ export default function Sidebar({ isCollapsed, onToggle, currentLanguage, onLang
             </Button>
           </div>
         </div>
+      )}
+
+      {/* AI Chatbot Modal */}
+      {isChatOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <Card className={`w-full max-w-md h-[600px] flex flex-col ${isChatMinimized ? 'h-16' : ''}`}>
+            {/* Chat Header */}
+            <div className="flex items-center justify-between p-4 border-b border-thai-cream bg-thai-red text-white rounded-t-lg">
+              <div className="flex items-center gap-2">
+                <Bot className="h-5 w-5" />
+                <h3 className="font-semibold">
+                  {currentLanguage === 'th' ? 'AI ผู้ช่วย Kru English' : 'Kru English AI Assistant'}
+                </h3>
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-white hover:bg-thai-rose p-1"
+                  onClick={() => setIsChatMinimized(!isChatMinimized)}
+                >
+                  <Minimize2 className="h-4 w-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-white hover:bg-thai-rose p-1"
+                  onClick={() => setIsChatOpen(false)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {!isChatMinimized && (
+              <>
+                {/* Chat Messages */}
+                <ScrollArea className="flex-1 p-4">
+                  <div className="space-y-4">
+                    {chatMessages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-[80%] p-3 rounded-lg ${
+                            message.sender === 'user'
+                              ? 'bg-thai-red text-white'
+                              : 'bg-thai-cream text-gray-800'
+                          }`}
+                        >
+                          <p className="text-sm">{message.text}</p>
+                          <p className="text-xs opacity-70 mt-1">
+                            {message.timestamp.toLocaleTimeString(currentLanguage === 'th' ? 'th-TH' : 'en-US')}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+
+                {/* Chat Input */}
+                <div className="p-4 border-t border-thai-cream">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                      placeholder={currentLanguage === 'th' ? 'พิมพ์ข้อความ...' : 'Type a message...'}
+                      className="flex-1 px-3 py-2 border border-thai-cream rounded-lg focus:outline-none focus:border-thai-red"
+                    />
+                    <Button
+                      onClick={handleSendMessage}
+                      className="bg-thai-red hover:bg-thai-rose text-white"
+                      disabled={!newMessage.trim()}
+                    >
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2 text-center">
+                    {currentLanguage === 'th' 
+                      ? 'ถามเกี่ยวกับคอร์ส ราคา ตารางเรียน หรือการใช้งานเว็บไซต์' 
+                      : 'Ask about courses, pricing, schedule, or website navigation'}
+                  </p>
+                </div>
+              </>
+            )}
+          </Card>
+        </div>
+      )}
+
+      {/* Floating Chatbot Button for Collapsed Sidebar */}
+      {isCollapsed && (
+        <Button
+          onClick={() => setIsChatOpen(true)}
+          className="fixed bottom-4 left-4 w-12 h-12 rounded-full bg-thai-red hover:bg-thai-rose text-white shadow-lg"
+        >
+          <Bot className="h-5 w-5" />
+        </Button>
       )}
     </div>
   );
