@@ -1,0 +1,57 @@
+สร้างเว็บไซต์ที่สวยงามและทันสมัยสำหรับ Kru English ใน Lovable.dev เพื่อเป็นแพลตฟอร์มเรียนภาษาอังกฤษออนไลน์ ตามข้อกำหนดต่อไปนี้:
+
+1. **เป้าหมายของเว็บไซต์**:
+   - สร้างแพลตฟอร์มที่ให้ข้อมูลคอร์สเรียนภาษาอังกฤษ ช่วยผู้เรียนสมัคร ชำระเงิน และจัดการตารางเรียน/เอกสาร
+   - กลุ่มเป้าหมาย: นักเรียน นักศึกษา และผู้ใหญ่ที่ต้องการพัฒนาทักษะภาษาอังกฤษ (A1-B1)
+
+2. **โครงสร้างและหน้าเว็บ**:
+   - **Homepage**:
+     - Hero Section: รูปภาพชั้นเรียน Zoom พร้อมข้อความ “Learn English Live with Native Teachers, Anytime, Anywhere!” และปุ่ม “View Plans & Pricing”
+     - Feature Section: การ์ด 4 อันแสดง “Live Zoom Classes”, “Free Materials”, “24/7 Replay”, “Global Certificates”
+     - Testimonials: รีวิวจากผู้เรียน (เช่น “พูดได้มั่นใจใน 2 เดือน!”)
+     - Pricing Section: แสดงแพลน General English (390-4,000 บาท), CEFR Platinum English (590 บาท), และ Combo (1,500 บาท) พร้อมปุ่ม “Buy Now”
+   - **About Page**:
+     - อธิบายวิสัยทัศน: “We help you speak English confidently!” และแนะนำวครู
+   - **Pricing Page**:
+     - แสดงแพลนทั้ง 3 แบบ พร้อมส่วนลด 10-20% สำหรับ 3 เดือนขึ้น
+     - **Level Test Page**:
+       - แบบทดสอบออนไลน์ A1-A2 พร้อมปุ่ม “Buy Now” หลังผลทดสอบ
+   - **Payment Page**:
+     - แบบฟอร์มชำระเงิน (Stripe/PayPal) พร้อมสรุปแพลน
+   - **Post-Payment Page**:
+     - ลิงก์ดาวน์โหลดเอกสาร, ตารางสอน, ลิงก์ Zoom, และวิดีโอย้อนหลัง
+   - **Contact Page**:
+     - แบบฟอร์มติดต่อ, LINE ID: @kruenglish, อีเมล, และลิงก์โซเชียลมีเดีย
+   - **Navigation**: Sticky Navbar กับลิงก์ Home, About, Courses, Pricing, Pricing, Contact, Testimonials
+
+3. **การออกแบบ**:
+   - **สไตล์**: ทันสมัย สะอาดตา และเป็นมิตร
+   - **โทนสี**: น้ำเงิน ขาว ส้มอ่อน
+   - **ตัวอักษร**: Poppins หรือ Inter (16-18px สำหรับเนื้อหา, 24-36px สำหรับหัวข้อ)
+   - **เลย์เอาต์**: Responsive รองรับทุกอุปกรณ์
+   - **ภาพ**: ภาพชั้นเรียน Zoom, ครู, และเอกสาร
+   - **อนิเมชัน**: Fade-in สำหรับการ์ดและปุ่ม CTA
+
+4. **ฟังก์ชันการทำงาน**:
+   - **Integrations**:
+     - Zoom API สำหรับลิงก์เรียนสด
+     - Google Forms สำหรับแบบทดสอบและฟอร์มติดต่อ
+     - Stripe/PayPal สำหรับชำระเงิน
+     - **SEO**: Meta Title: “Kru English – Online English Learning”; Meta Description: “Live English classes via Zoom, free materials, and global certificates. Start at 390!”; Alt Text: “Kru English online English class”
+   - **ความเร็ว**: ปรับภาพ <200KB
+   - **Accessibility**: คอนทราสต์ตาม WCAG 2.1, รองรับคีย์บอร์ด
+
+5. **การทดสอบและเผยแพร่**:
+   - ทดสอบการแสดงผลบนเดสก์ท็อป, แท็บเล็ต, และมือถือ
+   - ตรวจสอบลิงก์ Zoom, การชำระเงิน, และการดาวน์โหลดเอกสาร
+   - เผยแพร่ด้วยโดเมนย่อยของ Lovable.dev หรือโดเมนกำหนดเอง
+
+6. **ตัวอย่างอ้างอิง**:
+   - เว็บไซต์เช่น Khan Academy สำหรับความเรียบง่าย
+   - เทมเพลตการศึกษาใน Lovable.dev
+
+7. **ข้อจำกัด**:
+   - ใช้เครื่องมือฟรีใน Lovable.dev
+   - เสร็จภายใน 7 วัน
+
+เริ่มสร้างเว็บไซต์ใน Lovable.dev โดยเน้นความสวยงาม ความง่ายในการใช้งาน และการตอบโจทย์ผู้เรียนภาษาอังกฤษ
