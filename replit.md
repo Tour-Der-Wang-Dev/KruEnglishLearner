@@ -88,6 +88,16 @@ This is a modern, full-stack web application for an online English learning plat
 - **Neon**: Serverless PostgreSQL with connection pooling
 - **Connection**: @neondatabase/serverless for edge-compatible database access
 
+### Video Conferencing
+- **Zoom API**: Server-to-server OAuth integration for automated meeting creation
+- **Features**: Recurring class scheduling, automatic link generation, meeting management
+- **Authentication**: Account-based OAuth with secure token management
+
+### AI Integration
+- **OpenAI API**: GPT-4o integration for intelligent chatbot responses
+- **Features**: Multilingual support, course guidance, platform assistance
+- **Fallback**: Rule-based responses when AI service is unavailable
+
 ### UI and Styling
 - **Radix UI**: Accessible component primitives for complex UI elements
 - **Tailwind CSS**: Utility-first CSS framework with custom design tokens
@@ -117,6 +127,10 @@ This is a modern, full-stack web application for an online English learning plat
 - `DATABASE_URL`: PostgreSQL connection string (Neon)
 - `STRIPE_SECRET_KEY`: Stripe API key for payment processing
 - `VITE_STRIPE_PUBLIC_KEY`: Stripe publishable key for frontend
+- `ZOOM_ACCOUNT_ID`: Zoom account identifier for server-to-server apps
+- `ZOOM_API_KEY`: Zoom client ID for OAuth authentication
+- `ZOOM_API_SECRET`: Zoom client secret for secure API access
+- `OPENAI_API_KEY`: OpenAI API key for AI chatbot functionality
 
 ### Hosting Strategy
 - Single-deployment full-stack application
@@ -126,27 +140,33 @@ This is a modern, full-stack web application for an online English learning plat
 
 ## Recent Changes
 
+- July 08, 2025: **Real Zoom API Integration** - Comprehensive Zoom meeting automation
+  - Implemented ZoomService with OAuth 2.0 server-to-server authentication
+  - Created automated class link generation with recurring meeting support
+  - Added admin Zoom management interface with meeting CRUD operations
+  - Integrated Zoom link generation directly into course creation workflow
+  - Added bulk meeting creation and real-time connection testing
+  - Enhanced course management with automatic Zoom link provisioning
+- July 08, 2025: **Enhanced AI Chatbot Integration**
+  - Upgraded sidebar with intelligent AI assistant using OpenAI API
+  - Implemented comprehensive rule-based fallback responses
+  - Added multilingual support for Thai/English AI conversations
+  - Created detailed course information and platform guidance responses
+  - Enhanced admin workspace with AI-powered features
+- July 08, 2025: **Professional Admin Workspace** - Complete administrative interface
+  - Created comprehensive admin sidebar with Thai red color scheme
+  - Implemented course management with CRUD operations and Zoom integration
+  - Added student management dashboard with payment status tracking
+  - Built admin dashboard with payment analytics and system monitoring
+  - Enhanced admin interface following Thai design specifications
 - January 08, 2025: **Major Code Refactoring** - Comprehensive architecture improvements for better maintainability
   - Created type-safe API service layer with SOLID principles
   - Implemented proper separation of concerns across all components
   - Added comprehensive error handling and loading states
   - Enhanced performance with lazy loading and caching utilities
   - Improved testability with dependency injection patterns
-- January 08, 2025: **Enhanced UI/UX Architecture**
-  - Added Layout components for consistent page structure
-  - Created reusable form components with validation
-  - Implemented proper error boundaries and loading states
-  - Added performance monitoring and optimization utilities
-- January 08, 2025: **Server-Side Improvements**
-  - Added service layer with interface segregation
-  - Implemented validation middleware with Zod schemas
-  - Created payment and email service abstractions
-  - Enhanced error handling and logging
 - July 08, 2025: Fixed all TypeScript LSP errors in storage and routes files
-- July 08, 2025: Resolved navigation issues with nested anchor tags in navbar and footer
-- July 08, 2025: Updated Stripe API version to latest (2025-06-30.basil)
 - July 08, 2025: Enhanced type safety in data storage methods
-- July 08, 2025: Added comprehensive README.md documentation
 - July 08, 2025: Initial setup and MVP completion
 
 ## Changelog

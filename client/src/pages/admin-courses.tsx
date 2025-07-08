@@ -172,7 +172,7 @@ export default function AdminCourses() {
         return;
       }
 
-      // Mock save - replace with actual API call
+      // Create course
       const newCourse: Course = {
         id: editingCourse?.id || Date.now(),
         name: formData.name,
@@ -188,6 +188,34 @@ export default function AdminCourses() {
         status: 'active',
         createdAt: editingCourse?.createdAt || new Date().toISOString().split('T')[0]
       };
+
+      // Auto-generate Zoom link if not provided
+      if (!formData.zoomLink && formData.name && formData.schedule) {
+        try {
+          const response = await apiRequest('POST', '/api/zoom/create-meeting', {
+            courseName: formData.name,
+            schedule: formData.schedule,
+            duration: parseInt(formData.duration.replace(/[^\d]/g, '')) || 60,
+            courseId: newCourse.id
+          });
+
+          const zoomData = await response.json();
+          if (zoomData.success) {
+            newCourse.zoomLink = zoomData.meeting.join_url;
+            toast({
+              title: "Success",
+              description: "คอร์สและลิงก์ Zoom ถูกสร้างเรียบร้อยแล้ว"
+            });
+          }
+        } catch (zoomError) {
+          console.warn('Failed to create Zoom link:', zoomError);
+          toast({
+            title: "Warning",
+            description: "บันทึกคอร์สสำเร็จ แต่ไม่สามารถสร้างลิงก์ Zoom ได้",
+            variant: "destructive"
+          });
+        }
+      }
 
       if (editingCourse) {
         setCourses(prev => prev.map(c => c.id === editingCourse.id ? newCourse : c));
@@ -353,13 +381,18 @@ export default function AdminCourses() {
                         
                         <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
                           <span>ครูผู้สอน: {course.teacher}</span>
-                          {course.zoomLink && (
+                          {course.zoomLink ? (
                             <div className="flex items-center gap-1">
-                              <Video className="h-4 w-4" />
+                              <Video className="h-4 w-4 text-green-600" />
                               <a href={course.zoomLink} target="_blank" rel="noopener noreferrer" 
                                  className="text-thai-red hover:underline">
-                                Zoom Link
+                                Zoom Ready
                               </a>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1">
+                              <Video className="h-4 w-4 text-yellow-600" />
+                              <span className="text-yellow-600">Zoom Pending</span>
                             </div>
                           )}
                         </div>
@@ -488,12 +521,58 @@ export default function AdminCourses() {
                   
                   <div>
                     <label className="block text-sm font-medium mb-1">ลิงก์ Zoom</label>
-                    <Input
-                      value={formData.zoomLink}
-                      onChange={(e) => setFormData({...formData, zoomLink: e.target.value})}
-                      className="border-thai-cream focus:border-thai-red"
-                      placeholder="https://zoom.us/j/..."
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        value={formData.zoomLink}
+                        onChange={(e) => setFormData({...formData, zoomLink: e.target.value})}
+                        className="border-thai-cream focus:border-thai-red"
+                        placeholder="https://zoom.us/j/... (ว่างไว้เพื่อสร้างอัตโนมัติ)"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={async () => {
+                          if (!formData.name) {
+                            toast({
+                              title: "Error",
+                              description: "กรุณากรอกชื่อคอร์สก่อน",
+                              variant: "destructive"
+                            });
+                            return;
+                          }
+                          
+                          try {
+                            const response = await apiRequest('POST', '/api/zoom/create-meeting', {
+                              courseName: formData.name,
+                              schedule: formData.schedule,
+                              duration: parseInt(formData.duration.replace(/[^\d]/g, '')) || 60
+                            });
+                            
+                            const data = await response.json();
+                            if (data.success) {
+                              setFormData({...formData, zoomLink: data.meeting.join_url});
+                              toast({
+                                title: "Success",
+                                description: "สร้างลิงก์ Zoom เรียบร้อยแล้ว"
+                              });
+                            }
+                          } catch (error: any) {
+                            toast({
+                              title: "Error",
+                              description: "ไม่สามารถสร้างลิงก์ Zoom ได้",
+                              variant: "destructive"
+                            });
+                          }
+                        }}
+                        className="border-thai-orange text-thai-orange hover:bg-thai-orange hover:text-white"
+                      >
+                        <Video className="h-4 w-4 mr-1" />
+                        สร้าง
+                      </Button>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      ปล่อยว่างไว้เพื่อให้ระบบสร้างลิงก์ Zoom อัตโนมัติ
+                    </p>
                   </div>
                   
                   <div className="flex gap-3 pt-4">

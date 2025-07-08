@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import { storage } from "./storage";
 import { registerAdminRoutes } from "./routes-admin";
 import { registerAIRoutes } from "./routes-ai";
+import { registerZoomRoutes } from "./routes-zoom";
 import { insertUserSchema, insertContactSchema, insertLevelTestSchema } from "@shared/schema";
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -198,6 +199,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register AI routes
   registerAIRoutes(app);
+  
+  // Register Zoom routes
+  registerZoomRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;
